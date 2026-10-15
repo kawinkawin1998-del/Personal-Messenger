@@ -1,0 +1,12 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+    match /users/{u} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == u;
+    }
+    match /chats/{c}/messages/{m} {
+      allow read, write: if request.auth != null && c.matches('.*' + request.auth.uid + '.*');
+    }
+  }
+}
